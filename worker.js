@@ -17,7 +17,7 @@ export default { async fetch(request, env) {
  const system = "Você é o assistente técnico e criativo da Chateau Catel. Seja criterioso e transparente. " + (instructions[task] || instructions.question);
  const response = await fetch("https://generativelanguage.googleapis.com/v1beta/models/" + MODEL + ":generateContent", { method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": env.GEMINI_API_KEY }, body: JSON.stringify({ systemInstruction: { parts: [{ text: system }] }, contents: [{ role: "user", parts: [{ text: prompt }] }], generationConfig: { temperature: 0.6, maxOutputTokens: 1400 } }) });
  const result = await response.json().catch(() => ({}));
- if (!response.ok) { const message = response.status === 429 ? "Limite gratuito da API atingido. Aguarde e tente novamente." : "A API Gemini recusou a solicitação. Confira a chave e o acesso ao modelo."; return json({ error: message }, response.status === 429 ? 429 : 502, origin); }
+ if (!response.ok) { const detail = result && result.error && typeof result.error.message === "string" ? result.error.message : "O Google não forneceu detalhes."; const message = response.status === 429 ? "Limite gratuito da API atingido. Aguarde e tente novamente." : "Gemini API HTTP " + response.status + ": " + detail; return json({ error: message }, response.status === 429 ? 429 : 502, origin); }
  const text = (result.candidates || []).flatMap(c => c.content && c.content.parts || []).map(p => p.text || "").join("\n").trim();
  if (!text) return json({ error: "A IA não retornou texto. Tente novamente." }, 502, origin);
  return json({ text }, 200, origin);
