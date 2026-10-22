@@ -1,5 +1,5 @@
 const ALLOWED_ORIGIN = "https://igorcatelli100907-alt.github.io";
-const MODEL = "gemini-2.5-flash";
+const MODEL = "gemini-3.8-flash";
 function cors(origin) { return { "Access-Control-Allow-Origin": origin === ALLOWED_ORIGIN ? origin : ALLOWED_ORIGIN, "Access-Control-Allow-Methods": "POST, OPTIONS", "Access-Control-Allow-Headers": "Content-Type", "Vary": "Origin" }; }
 function json(data, status, origin) { return new Response(JSON.stringify(data), { status, headers: { "Content-Type": "application/json; charset=utf-8", ...cors(origin) } }); }
 export default { async fetch(request, env) {
